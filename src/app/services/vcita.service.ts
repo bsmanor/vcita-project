@@ -20,8 +20,21 @@ export class VcitaService {
     return this.http.get(`${this.domain}/services/biz4vc2tlwoj331e/availability?start_date=2020-07-10&end_date=2020-07-16`, {headers});
   }
 
-  createClient(spot: any) {
+  createClient(client: any, spot: any) {
+    const headers = new HttpHeaders()
+    .set("Authorization", "Bearer a0a6760c5856c167553b16ec698ddbf8")
+    .set("Content-Type", "application/json")
 
+    const bodyParams = {
+      first_name: client.firstName,
+      last_name: client.lastName,
+      email: client.email,
+      phone: client.phone
+    }
+
+    this.http.post(`${this.domain}/clients`, bodyParams, {headers}).subscribe(res => {
+      console.log(res);
+    })
   }
 
   createNewBooking() {

@@ -26,6 +26,7 @@ import {MatTreeModule} from '@angular/material/tree';
 import {MatRadioModule} from '@angular/material/radio';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import {MatNativeDateModule} from '@angular/material/core';
 
 @NgModule({
   imports: [
@@ -60,7 +61,8 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
     MatTreeModule,
     MatRadioModule,
     MatProgressBarModule,
-    MatSlideToggleModule
+    MatSlideToggleModule,
+    MatNativeDateModule
   ],
   exports: [
     MatFormFieldModule,

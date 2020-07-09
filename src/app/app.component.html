@@ -1,16 +1,63 @@
-<div fxLayout="column" fxLayoutAlign="center center" style="height: 100vh;">
+<div fxLayout="column" fxLayoutAlign="start center" fxLayoutGap="30px" style="height: 100vh; padding: 20px;">
+
+  <div fxLayout="row" fxLayoutGap="25px">
+    <mat-form-field appearance="fill">
+      <mat-label>Start date</mat-label>
+      <input matInput [matDatepicker]="start" [(ngModel)]="startDate">
+      <mat-datepicker-toggle matSuffix [for]="start"></mat-datepicker-toggle>
+      <mat-datepicker #start></mat-datepicker>
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>End date</mat-label>
+      <input matInput [matDatepicker]="end" [(ngModel)]="endDate">
+      <mat-datepicker-toggle matSuffix [for]="end"></mat-datepicker-toggle>
+      <mat-datepicker #end></mat-datepicker>
+    </mat-form-field>
+  </div>
+
   <button mat-raised-button color="primary" (click)="findAvailableSpots()">Find Available Spots</button>
 
-  <div id="spots" fxLayout="row wrap" fxLayoutAlign="center center" fxLayoutGap="15px grid">
-    <div *ngFor="let spot of spots; let i = index;">
-      <mat-card (click)="book(i)">
-        <mat-card-content fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="15px">
-          <div>{{spot.start_time}}</div>
-          <div>{{spot.duration_minutes}} minutes</div>
-        </mat-card-content>
-      </mat-card>
+  <mat-spinner *ngIf="loadingSpots"></mat-spinner>
+
+  <!-- spots -->
+  <div *ngIf="spots.length > 0" fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="15px">
+    <h3>Available Spots:</h3>
+    <div id="spots" fxLayout="row wrap" fxLayoutAlign="center center" fxLayoutGap="15px grid">
+      <div *ngFor="let spot of spots; let i = index;">
+        <mat-card (click)="setSpot(i)" [style.backgroud-color]="selectedSpot === i ? '#FF9800' : '#FFE0B2'">
+          <mat-card-content fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="15px">
+            <div>{{spot.start_time}}</div>
+            <div>{{spot.duration_minutes}} minutes</div>
+          </mat-card-content>
+        </mat-card>
+      </div>
     </div>
   </div>
 
-  <button mat-raised-button color="accent">Book Appointment </button>
+  <!-- client info -->
+  <div fxLayout="row wrap" fxLayoutAlign="center start" fxLayoutGap="15px grid">
+
+    <mat-form-field>
+      <mat-label>First Name</mat-label>
+      <input name="firstName" matInput [(ngModel)]="client.firstName">
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Last Name</mat-label>
+      <input name="lastName" matInput [(ngModel)]="client.lastName">
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Email Address</mat-label>
+      <input name="email" matInput [(ngModel)]="client.email">
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Phone</mat-label>
+      <input name="phone" matInput [(ngModel)]="client.phone">
+    </mat-form-field>
+
+  </div>
+
+  <button *ngIf="selectedSpot !== null" mat-raised-button color="accent" (click)="book()">Book Appointment</button>
 </div>
