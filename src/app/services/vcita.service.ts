@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import * as moment from 'moment';
 
 @Injectable({
   providedIn: 'root'
@@ -21,10 +22,13 @@ export class VcitaService {
     .set("Authorization", "Bearer a0a6760c5856c167553b16ec698ddbf8")
     .set("Content-Type", "application/json")
 
-    console.log('get date: ' + start.toISOString().slice(0,10));
+    const startDate = moment(start).add(1, 'days').toISOString().slice(0,10);
+    const endDate = moment(end).add(1, 'days').toISOString().slice(0,10);
 
+    console.log(`Start: ${startDate} | End: ${endDate}`);
     
-    return this.http.get(`${this.domain}/services/${this.serviceId}/availability?start_date=${start.toISOString().slice(0,10)}&end_date=${end.toISOString().slice(0,10)}`, {headers});
+    
+    return this.http.get(`${this.domain}/services/${this.serviceId}/availability?start_date=${startDate}&end_date=${endDate}`, {headers});
   }
 
   createClient(client: any) {

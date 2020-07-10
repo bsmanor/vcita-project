@@ -1,8 +1,10 @@
 <div id="main-container" fxLayout="column" fxLayoutAlign="start center" fxLayoutGap="30px">
   
+  <h3 style="text-align: center;">You may inspect the page and check the Console tab in order<br>to view the raw response from vcita's API</h3>
+
   <!-- client info -->
+  <h2>1. Please enter client's information:</h2>
   <div fxLayout="row wrap" fxLayoutAlign="center start" fxLayoutGap="15px grid" style="width: 500px; padding: 30px; border: solid 1px grey;">
-    <h3>Please enter client's information:</h3>
 
     <mat-form-field>
       <mat-label>First Name</mat-label>
@@ -26,6 +28,7 @@
   
   </div>
 
+    <h2>1. When is it a good time for you?</h2>
   <!-- Selecting start an end dates -->
   <div fxLayout="row" fxLayoutGap="25px">
     <mat-form-field appearance="fill">
@@ -43,18 +46,18 @@
   </div>
   
 
-  <button mat-raised-button color="primary" (click)="findAvailableSpots()">Find Available Spots</button>
+  <button class="my-button" mat-raised-button color="primary" (click)="findAvailableSpots()">Find Available Spots</button>
 
   <mat-spinner *ngIf="loadingSpots"></mat-spinner>
 
   <!-- spots -->
   <div *ngIf="spots.length > 0" fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="15px">
-    <h3>Available Spots:</h3>
+    <h2>Select spot:</h2>
     <div id="spots" fxLayout="row wrap" fxLayoutAlign="center center" fxLayoutGap="15px grid">
       <div *ngFor="let spot of spots; let i = index;">
-        <mat-card (click)="setSpot(i)" [style.backgroud-color]="selectedSpot === i ? '#FF9800' : '#FFE0B2'">
+        <mat-card class="spot" (click)="setSpot(i)">
           <mat-card-content fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="15px">
-            <div>{{spot.start_time}}</div>
+            <div>{{spot.start_time.replace('T', ' ').slice(0, spot.start_time.length - 6)}}</div>
             <div>{{spot.duration_minutes}} minutes</div>
           </mat-card-content>
         </mat-card>
@@ -62,11 +65,12 @@
     </div>
   </div>
   <div *ngIf="noSpots">
-    <h2>There are no available spots at the selected time frame. <br>Please try a different date.</h2>
+    <h2 style="text-align: center;">There are no available spots at that time. <br>Please try a different date.</h2>
   </div>
 
 
   <button *ngIf="selectedSpot !== null" mat-raised-button color="accent" (click)="book()">Book Appointment</button>
+  <mat-spinner *ngIf="loadingBooking"></mat-spinner>
 
   <mat-card *ngIf="appointment !== null">
     <mat-card-header>

@@ -20,6 +20,7 @@ export class AppComponent {
   noSpots = false;
   loadingSpots = false;
   loadingBooking = false;
+  bookingError = '';
 
   client = {
     firstName: '',
@@ -36,9 +37,8 @@ export class AppComponent {
     this.loadingSpots = true;
     this.vcita.getServiceAvailability(this.startDate, this.endDate)
     .subscribe(res => {
+      console.log('Get Service Availability Response:');
       console.log(res);
-      
-      console.log(res['data']['availabilities']);
       let tmpSpots = res['data']['availabilities'];
       let i = 0;
       for (let date in tmpSpots) {
@@ -65,15 +65,29 @@ export class AppComponent {
   }
 
   book() {
+    this.appointment = null;
+    this.loadingBooking = true;
     this.vcita.createClient(this.client)
     .subscribe(res => {
+      console.log('Create Client Response:');
       console.log(res);
       let token = res['data']['token'];
+      if (token === undefined) {
+        this.loadingBooking = false;
+        alert('This client already exists.\nPlease try again with different client information.');
+        return;
+      }
       let clientId = res['data']['client'];
       this.vcita.createNewBooking(clientId, token, this.spots[this.selectedSpot])
       .subscribe((appointment) => {
+        console.log('Create New Booking Response:');
         console.log(appointment);
+        this.loadingBooking = false;
         this.appointment = appointment['data']['booking'];
+      },
+      err => {
+        this.loadingBooking = false
+        this.bookingError = err['err']
       })
     })
   }
