@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { VcitaService } from './services/vcita.service';
 import * as moment from 'moment';
+import { IAppointment } from './models/interfaces';
 
 @Component({
   selector: 'app-root',
@@ -11,12 +12,14 @@ export class AppComponent {
 
   constructor(private vcita: VcitaService) {}
 
-  startDate: string = null;
-  endDate: string = null;
+  startDate: Date = null;
+  endDate: Date = null;
 
   spots = [];
   selectedSpot = null;
+  noSpots = false;
   loadingSpots = false;
+  loadingBooking = false;
 
   client = {
     firstName: '',
@@ -25,18 +28,16 @@ export class AppComponent {
     phone: ''
   }
 
-  
+  appointment: IAppointment = null;
 
   findAvailableSpots() {
-
+    this.noSpots = false;
     this.spots = [];
-
-    console.log(moment(this.startDate.toString().slice(0,15)).toISOString());
-    console.log(this.endDate.toString().slice(0,15));
-    
     this.loadingSpots = true;
-    this.vcita.getServiceAvailability()
+    this.vcita.getServiceAvailability(this.startDate, this.endDate)
     .subscribe(res => {
+      console.log(res);
+      
       console.log(res['data']['availabilities']);
       let tmpSpots = res['data']['availabilities'];
       let i = 0;
@@ -45,10 +46,17 @@ export class AppComponent {
           if (i < 2) {
             i = i+1;
             this.spots.push(spot);
+            this.noSpots = false;
           }
         }
       }
       this.loadingSpots = false;
+      if (this.spots.length === 0) {
+        this.noSpots = true;
+      }
+    },
+    err => {
+      console.log(err);
     }); 
   }
 
@@ -57,6 +65,17 @@ export class AppComponent {
   }
 
   book() {
-    this.vcita.createClient(this.client, this.spots[this.selectedSpot])
+    this.vcita.createClient(this.client)
+    .subscribe(res => {
+      console.log(res);
+      let token = res['data']['token'];
+      let clientId = res['data']['client'];
+      this.vcita.createNewBooking(clientId, token, this.spots[this.selectedSpot])
+      .subscribe((appointment) => {
+        console.log(appointment);
+        this.appointment = appointment['data']['booking'];
+      })
+    })
   }
+
 }

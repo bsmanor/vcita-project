@@ -1,5 +1,32 @@
-<div fxLayout="column" fxLayoutAlign="start center" fxLayoutGap="30px" style="height: 100vh; padding: 20px;">
+<div id="main-container" fxLayout="column" fxLayoutAlign="start center" fxLayoutGap="30px">
+  
+  <!-- client info -->
+  <div fxLayout="row wrap" fxLayoutAlign="center start" fxLayoutGap="15px grid" style="width: 500px; padding: 30px; border: solid 1px grey;">
+    <h3>Please enter client's information:</h3>
 
+    <mat-form-field>
+      <mat-label>First Name</mat-label>
+      <input name="firstName" matInput [(ngModel)]="client.firstName">
+    </mat-form-field>
+  
+    <mat-form-field>
+      <mat-label>Last Name</mat-label>
+      <input name="lastName" matInput [(ngModel)]="client.lastName">
+    </mat-form-field>
+  
+    <mat-form-field>
+      <mat-label>Email Address</mat-label>
+      <input name="email" matInput [(ngModel)]="client.email">
+    </mat-form-field>
+  
+    <mat-form-field>
+      <mat-label>Phone</mat-label>
+      <input name="phone" matInput [(ngModel)]="client.phone">
+    </mat-form-field>
+  
+  </div>
+
+  <!-- Selecting start an end dates -->
   <div fxLayout="row" fxLayoutGap="25px">
     <mat-form-field appearance="fill">
       <mat-label>Start date</mat-label>
@@ -14,6 +41,7 @@
       <mat-datepicker #end></mat-datepicker>
     </mat-form-field>
   </div>
+  
 
   <button mat-raised-button color="primary" (click)="findAvailableSpots()">Find Available Spots</button>
 
@@ -33,31 +61,24 @@
       </div>
     </div>
   </div>
-
-  <!-- client info -->
-  <div fxLayout="row wrap" fxLayoutAlign="center start" fxLayoutGap="15px grid">
-
-    <mat-form-field>
-      <mat-label>First Name</mat-label>
-      <input name="firstName" matInput [(ngModel)]="client.firstName">
-    </mat-form-field>
-
-    <mat-form-field>
-      <mat-label>Last Name</mat-label>
-      <input name="lastName" matInput [(ngModel)]="client.lastName">
-    </mat-form-field>
-
-    <mat-form-field>
-      <mat-label>Email Address</mat-label>
-      <input name="email" matInput [(ngModel)]="client.email">
-    </mat-form-field>
-
-    <mat-form-field>
-      <mat-label>Phone</mat-label>
-      <input name="phone" matInput [(ngModel)]="client.phone">
-    </mat-form-field>
-
+  <div *ngIf="noSpots">
+    <h2>There are no available spots at the selected time frame. <br>Please try a different date.</h2>
   </div>
 
+
   <button *ngIf="selectedSpot !== null" mat-raised-button color="accent" (click)="book()">Book Appointment</button>
+
+  <mat-card *ngIf="appointment !== null">
+    <mat-card-header>
+      <mat-card-title>{{appointment.auto_reply_message}}</mat-card-title>
+      <mat-card-subtitle>{{appointment.title}}</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content fxLayout="column" fxLayoutAlign="center start" fxLayoutGap="15px" style="padding-left: 20px;">
+      <div><b>Client ID:</b> {{appointment.client_id}}</div>
+      <div><b>Srart time:</b> {{appointment.start_time}} - {{appointment.time_zone}}</div>
+      <div><b>Status:</b> {{appointment.status}}</div>
+      <div><b>Type:</b> {{appointment.type}}</div>
+      <div><b>Created at:</b> {{appointment.created_at}}</div>
+    </mat-card-content>
+  </mat-card>
 </div>
